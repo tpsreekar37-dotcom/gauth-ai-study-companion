@@ -13,9 +13,15 @@ export interface AIExplanation {
   steps: Array<{
     title: string;
     description: string;
+    math?: string;
+    why?: string;
   }>;
   finalAnswer: string;
   beginnerExplanation: string;
+  commonMistakes?: string[];
+  confidenceScore?: number;
+  difficulty?: 'Easy' | 'Medium' | 'Hard';
+  estimatedSolveTime?: string;
   practiceQuestion: {
     question: string;
     options: string[];

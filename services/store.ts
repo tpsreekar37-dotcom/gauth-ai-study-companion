@@ -29,13 +29,35 @@ const mockQuestions: Omit<HistoryItem, 'id' | 'timestamp' | 'bookmarked'>[] = [
     subject: "Math",
     explanation: {
       understanding: "We need to find the values of x that satisfy the quadratic equation x^2 - 4 = 0.",
+      difficulty: "Easy",
+      estimatedSolveTime: "1 min",
+      confidenceScore: 99,
+      commonMistakes: [
+        "Forgetting the negative root when taking the square root (i.e. writing x = 2 instead of x = ±2).",
+        "Adding 4 to one side but subtracting from the other side by mistake."
+      ],
       steps: [
-        { title: "Move Constant", description: "Add 4 to both sides of the equation: x^2 = 4" },
-        { title: "Take Square Root", description: "Take the square root of both sides: x = ±√4" },
-        { title: "Simplify", description: "Simplify the root: x = 2 or x = -2" }
+        { 
+          title: "Isolate the variable term", 
+          description: "Move the constant -4 to the right side of the equation by adding 4 to both sides.",
+          math: "x^2 = 4",
+          why: "This groups the variable x^2 on the left side and the numbers on the right side."
+        },
+        { 
+          title: "Take the square root", 
+          description: "Solve for x by taking the square root of both sides. Remember that taking the square root of a positive number yields both positive and negative roots.",
+          math: "x = ±√4",
+          why: "Any quadratic equation has up to two real solutions."
+        },
+        { 
+          title: "Simplify the roots", 
+          description: "Simplify √4 to 2, yielding two solutions: 2 and -2.",
+          math: "x = ±2",
+          why: "Since 2 * 2 = 4 and (-2) * (-2) = 4, both numbers are correct solutions."
+        }
       ],
       finalAnswer: "x = ±2",
-      beginnerExplanation: "Imagine you are finding a number which, when multiplied by itself, gives 4. Both 2 * 2 and (-2) * (-2) equal 4.",
+      beginnerExplanation: "Imagine you are looking for a number that, when multiplied by itself, gives 4. If you multiply 2 by 2, you get 4. If you multiply -2 by -2, the negatives cancel out and you also get 4! So both 2 and -2 are correct answers.",
       practiceQuestion: {
         question: "Solve x^2 - 9 = 0",
         options: ["x = ±3", "x = ±9", "x = 3", "x = -3"],
@@ -49,12 +71,26 @@ const mockQuestions: Omit<HistoryItem, 'id' | 'timestamp' | 'bookmarked'>[] = [
     subject: "General",
     explanation: {
       understanding: "Identify the capital city of the nation of France.",
+      difficulty: "Easy",
+      estimatedSolveTime: "30s",
+      confidenceScore: 98,
+      commonMistakes: [
+        "Confusing the capital with other major cities like Marseille or Lyon."
+      ],
       steps: [
-        { title: "Geographical Identification", description: "France is a European country." },
-        { title: "Capital Recognition", description: "Paris is its largest city and official seat of government." }
+        { 
+          title: "Geographical Identification", 
+          description: "Locate France on the world map as a key European country.",
+          why: "Capital cities serve as the central administrative hub of their respective nations."
+        },
+        { 
+          title: "Capital Recognition", 
+          description: "Recognize Paris as the seat of the French government and the nation's largest urban center.",
+          why: "Historically, Paris has been the capital since the late 10th century under King Hugh Capet."
+        }
       ],
       finalAnswer: "Paris",
-      beginnerExplanation: "Paris is the main city in France, famous for the Eiffel Tower.",
+      beginnerExplanation: "Paris is the main city in France. It is globally famous for landmarks like the Eiffel Tower, the Louvre museum, and French pastries!",
       practiceQuestion: {
         question: "What is the capital of Germany?",
         options: ["Munich", "Berlin", "Frankfurt", "Hamburg"],

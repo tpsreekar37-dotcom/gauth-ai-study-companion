@@ -27,9 +27,18 @@ export class GeminiService {
       You must respond ONLY with a valid JSON object matching this TypeScript interface:
       interface AIExplanation {
         understanding: string; // Brief problem understanding summary
-        steps: Array<{ title: string; description: string }>; // Step-by-step solver steps
-        finalAnswer: string; // The final solution answer text
-        beginnerExplanation: string; // Clear, simple explanation as if explaining to a 10 year old
+        difficulty: 'Easy' | 'Medium' | 'Hard'; // Difficulty level of the question
+        estimatedSolveTime: string; // Estimated time to solve, e.g. "2 mins" or "45s"
+        confidenceScore: number; // Confidence level in percent (e.g. 98)
+        commonMistakes: string[]; // List of 2-3 common mistakes students make on this topic
+        steps: Array<{ 
+          title: string; 
+          description: string; 
+          math?: string; // Optional math equation block (e.g., 'x^2 = 4' or chemical formulas) if applicable
+          why?: string; // Optional reasoning or tip for this step
+        }>; // Step-by-step solver steps
+        finalAnswer: string; // The final solution answer text (short and highlighted)
+        beginnerExplanation: string; // Clear, simple explanation as if explaining to a 12 year old
         practiceQuestion: {
           question: string; // Similar question for practice
           options: string[]; // 4 multiple choice options
@@ -87,22 +96,35 @@ export class GeminiService {
     if (subject === 'Math' || query.toLowerCase().includes('x^2') || query.toLowerCase().includes('solve')) {
       return {
         understanding: "We need to solve the quadratic equation x^2 - 4 = 0 for x.",
+        difficulty: "Easy",
+        estimatedSolveTime: "1 min",
+        confidenceScore: 99,
+        commonMistakes: [
+          "Forgetting the negative root when taking the square root (i.e. writing x = 2 instead of x = ±2).",
+          "Adding 4 to one side but subtracting from the other side by mistake."
+        ],
         steps: [
           {
-            title: "Isolate x^2",
-            description: "Add 4 to both sides of the equation: x^2 = 4"
+            title: "Isolate the variable term",
+            description: "Move the constant -4 to the right side of the equation by adding 4 to both sides.",
+            math: "x^2 = 4",
+            why: "Move constant terms to isolate the squared variable."
           },
           {
             title: "Take Square Roots",
-            description: "Apply the square root operation to both sides: x = ±√4"
+            description: "Apply the square root operation to both sides of the equation.",
+            math: "x = ±√4",
+            why: "Remember quadratic solutions yield both positive and negative roots."
           },
           {
             title: "Evaluate Roots",
-            description: "Since √4 = 2, we have two possible values: x = 2 or x = -2"
+            description: "Evaluate the roots: since √4 = 2, we have two possible values.",
+            math: "x = ±2",
+            why: "Simplifying √4 gives 2. The solution includes both x=2 and x=-2."
           }
         ],
         finalAnswer: "x = ±2",
-        beginnerExplanation: "If a number multiplied by itself is 4, that number could be 2 (since 2 * 2 = 4) or -2 (since negative times negative is positive, so -2 * -2 = 4).",
+        beginnerExplanation: "Imagine you are looking for a number that, when multiplied by itself, gives 4. If you multiply 2 by 2, you get 4. If you multiply -2 by -2, the negatives cancel out and you also get 4! So both 2 and -2 are correct answers.",
         practiceQuestion: {
           question: "Solve the equation x^2 - 16 = 0.",
           options: ["x = ±4", "x = ±16", "x = 4", "x = -4"],
@@ -115,14 +137,25 @@ export class GeminiService {
     if (subject === 'Science' || query.toLowerCase().includes('water') || query.toLowerCase().includes('chemical')) {
       return {
         understanding: "The user is asking about the chemical reaction of water synthesis.",
+        difficulty: "Medium",
+        estimatedSolveTime: "2 mins",
+        confidenceScore: 97,
+        commonMistakes: [
+          "Forgetting that hydrogen and oxygen are diatomic gases (H2 and O2) in nature.",
+          "Writing an unbalanced equation like H2 + O2 -> H2O."
+        ],
         steps: [
           {
             title: "Identify Reactants",
-            description: "The reactants are Hydrogen gas (H2) and Oxygen gas (O2)."
+            description: "The reactants are Hydrogen gas (H2) and Oxygen gas (O2).",
+            math: "Reactants: H2, O2",
+            why: "Locate what compounds interact to begin the equation."
           },
           {
             title: "Balance Equation",
-            description: "Write the reaction: 2H2 + O2 -> 2H2O"
+            description: "Balance elements so that the count of atoms on reactants match products.",
+            math: "2H2 + O2 -> 2H2O",
+            why: "Ensure the law of conservation of mass is satisfied by matching atom counts."
           }
         ],
         finalAnswer: "2H2 + O2 -> 2H2O",
@@ -138,14 +171,22 @@ export class GeminiService {
 
     return {
       understanding: `We are answering the query: "${query}"`,
+      difficulty: "Easy",
+      estimatedSolveTime: "45s",
+      confidenceScore: 98,
+      commonMistakes: [
+        "Confusing Paris with other Francophone administrative centers like Brussels."
+      ],
       steps: [
         {
           title: "Analyze Input",
-          description: "Read the prompt and categorize the question context."
+          description: "Read the prompt and categorize the question context.",
+          why: "Identify France as a sovereign nation in Western Europe."
         },
         {
           title: "Synthesize Knowledge",
-          description: "Formulate the response based on historical study logs."
+          description: "Formulate the response based on historical study logs.",
+          why: "Confirm Paris as the historic, economic, and political heart of France."
         }
       ],
       finalAnswer: "Paris is the capital of France.",

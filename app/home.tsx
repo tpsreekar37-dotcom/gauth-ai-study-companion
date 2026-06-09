@@ -32,11 +32,14 @@ const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { profile, history: studyHistory } = useAppStore();
+  const { profile, history: studyHistory, flashcards } = useAppStore();
 
   const recentItems = studyHistory.slice(0, 3);
   const weeklyGoal = 10;
   const progressPercent = Math.min(100, Math.round((profile.totalSolved / weeklyGoal) * 100));
+
+  const dueCardsCount = flashcards ? flashcards.filter(c => c.nextReviewDate <= Date.now()).length : 0;
+  const solvedTodayCount = studyHistory ? studyHistory.filter(h => h.timestamp >= Date.now() - 24 * 3600000).length : 0;
 
   // Generate a mock streak checklist for the past 7 days based on current streak
   const daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -106,11 +109,12 @@ export default function HomeScreen() {
                 <Keyboard size={20} color="#60a5fa" />
               </View>
               <View style={styles.cardBadge}>
-                <Text style={styles.cardBadgeText}>24/7 Solver</Text>
+                <Text style={styles.cardBadgeText}>+50 XP</Text>
               </View>
             </View>
             <Text style={styles.cardTitle}>Type Problem</Text>
             <Text style={styles.cardDesc}>Ask text questions manually</Text>
+            <Text style={styles.cardMeta}>• Fast Response</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
@@ -123,11 +127,12 @@ export default function HomeScreen() {
                 <BookOpen size={20} color="#c084fc" />
               </View>
               <View style={[styles.cardBadge, { backgroundColor: 'rgba(192, 132, 252, 0.15)' }]}>
-                <Text style={[styles.cardBadgeText, { color: '#c084fc' }]}>2 Due</Text>
+                <Text style={[styles.cardBadgeText, { color: '#c084fc' }]}>{dueCardsCount} Due</Text>
               </View>
             </View>
             <Text style={styles.cardTitle}>Flashcards</Text>
             <Text style={styles.cardDesc}>Spaced repetition study</Text>
+            <Text style={styles.cardMeta}>• {flashcards ? flashcards.length : 0} cards in deck</Text>
           </TouchableOpacity>
         </View>
 
@@ -142,11 +147,12 @@ export default function HomeScreen() {
                 <Award size={20} color="#fbbf24" />
               </View>
               <View style={[styles.cardBadge, { backgroundColor: 'rgba(251, 191, 36, 0.15)' }]}>
-                <Text style={[styles.cardBadgeText, { color: '#fbbf24' }]}>Multiplier</Text>
+                <Text style={[styles.cardBadgeText, { color: '#fbbf24' }]}>+40 XP</Text>
               </View>
             </View>
             <Text style={styles.cardTitle}>Quiz Mode</Text>
             <Text style={styles.cardDesc}>Test your curriculum skills</Text>
+            <Text style={styles.cardMeta}>• 82% avg accuracy</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
@@ -164,6 +170,7 @@ export default function HomeScreen() {
             </View>
             <Text style={styles.cardTitle}>History</Text>
             <Text style={styles.cardDesc}>Review saved answers</Text>
+            <Text style={styles.cardMeta}>• {studyHistory ? studyHistory.length : 0} solved ({solvedTodayCount} today)</Text>
           </TouchableOpacity>
         </View>
 
@@ -530,6 +537,12 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.4)',
     marginTop: 4,
     lineHeight: 14,
+  },
+  cardMeta: {
+    fontSize: 10,
+    color: '#a78bfa',
+    marginTop: 6,
+    fontWeight: 'bold',
   },
   analyticsHeader: {
     flexDirection: 'row',

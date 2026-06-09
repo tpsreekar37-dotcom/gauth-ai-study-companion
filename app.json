@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "Gauth AI Study Companion",
+    "slug": "gauth-ai-study-companion",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0c0a0f"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sreekar.gauthcompanion"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0c0a0f"
+      },
+      "package": "com.sreekar.gauthcompanion"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://gauth-ai-study-companion.expo.app"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Gauth Companion to access your camera to scan homework sheets."
+        }
+      ]
+    ],
+    "scheme": "gauth-companion",
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

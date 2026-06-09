@@ -21,7 +21,18 @@ export class GeminiService {
       const model = isImage ? 'gemini-1.5-flash' : 'gemini-1.5-pro';
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-      const prompt = `You are an expert AI Homework & Study tutor. Analyze the following study problem and return a structured JSON response.
+      let subjectPrompt = "";
+      if (subject === 'Math') {
+        subjectPrompt = "\nFormat equations clearly using standard text notation. Every step must have a clear, isolated 'math' expression block showing the intermediate state (e.g., '2x + 5 = 15' then '2x = 10' then 'x = 5').";
+      } else if (subject === 'Science') {
+        subjectPrompt = "\nProvide chemical equations, physics equations, or scientific formulas in the 'math' field (e.g., 'E = mc^2', '2H2 + O2 -> 2H2O', or 'F = ma'). Cover the underlying physical/chemical principles.";
+      } else if (subject === 'History') {
+        subjectPrompt = "\nArrange steps chronologically. Include key dates and sequential historical developments. Use the 'math' field to show historical timelines (e.g., '1939 -> Germany invades Poland -> Start of WWII').";
+      } else {
+        subjectPrompt = "\nIf this is a programming question, structure steps with code snippets in the 'math' field. For biology or other conceptual queries, provide structured reasoning.";
+      }
+
+      const prompt = `You are an expert AI Homework & Study tutor. Analyze the following study problem and return a structured JSON response.${subjectPrompt}
       The problem is: ${input.text || "Please extract the question/problem from the provided image and solve it."}
       
       You must respond ONLY with a valid JSON object matching this TypeScript interface:
@@ -34,7 +45,7 @@ export class GeminiService {
         steps: Array<{ 
           title: string; 
           description: string; 
-          math?: string; // Optional math equation block (e.g., 'x^2 = 4' or chemical formulas) if applicable
+          math?: string; // Optional math equation, chemical formula, code block, or timeline event
           why?: string; // Optional reasoning or tip for this step
         }>; // Step-by-step solver steps
         finalAnswer: string; // The final solution answer text (short and highlighted)
@@ -81,7 +92,6 @@ export class GeminiService {
         throw new Error("Invalid response from Gemini API");
       }
 
-      // Clean response if AI wrapped it in markdown code blocks
       const cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
       return JSON.parse(cleanText) as AIExplanation;
 

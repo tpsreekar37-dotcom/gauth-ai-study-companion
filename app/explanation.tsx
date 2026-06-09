@@ -129,7 +129,7 @@ export default function ExplanationScreen() {
             const isCorrect = idx === explanation.practiceQuestion.correctIndex;
             const isSelected = idx === selectedOption;
             
-            let optionStyle = styles.optionBtn;
+            let optionStyle: any = styles.optionBtn;
             if (showFeedback) {
               if (isCorrect) optionStyle = [styles.optionBtn, styles.optionCorrect];
               else if (isSelected) optionStyle = [styles.optionBtn, styles.optionIncorrect];

@@ -264,7 +264,6 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     backgroundColor: '#8b5cf6',
     opacity: 0.15,
-    blurRadius: 30,
   },
   scannerInfo: {
     flex: 1,

@@ -204,7 +204,7 @@ export default function QuizScreen() {
               const isCorrect = idx === currentQuestion.correctIndex;
               const isSelected = idx === selectedOption;
               
-              let styleBtn = styles.optionBtn;
+              let styleBtn: any = styles.optionBtn;
               if (showFeedback) {
                 if (isCorrect) styleBtn = [styles.optionBtn, styles.optionCorrect];
                 else if (isSelected) styleBtn = [styles.optionBtn, styles.optionIncorrect];

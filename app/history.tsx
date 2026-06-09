@@ -5,7 +5,8 @@ import {
   StyleSheet, 
   FlatList, 
   TouchableOpacity, 
-  SafeAreaView 
+  SafeAreaView,
+  ScrollView
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, Bookmark, Trash2, Calendar, ChevronRight } from 'lucide-react-native';
@@ -60,12 +61,27 @@ export default function HistoryScreen() {
 
       {/* Filter Badges */}
       <View style={styles.filtersWrapper}>
-        <ScrollViewHorizontal />
-        <ScrollViewHorizontalContent 
-          subjects={subjects} 
-          selected={filterSubject} 
-          onSelect={setFilterSubject} 
-        />
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filtersList}
+        >
+          <TouchableOpacity 
+            style={[styles.filterBadge, !filterSubject && styles.activeFilterBadge]}
+            onPress={() => setFilterSubject(null)}
+          >
+            <Text style={[styles.filterBadgeText, !filterSubject && styles.activeFilterBadgeText]}>All</Text>
+          </TouchableOpacity>
+          {subjects.map((sub) => (
+            <TouchableOpacity 
+              key={sub} 
+              style={[styles.filterBadge, filterSubject === sub && styles.activeFilterBadge]}
+              onPress={() => setFilterSubject(sub)}
+            >
+              <Text style={[styles.filterBadgeText, filterSubject === sub && styles.activeFilterBadgeText]}>{sub}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
 
       {filteredData.length === 0 ? (
@@ -134,32 +150,7 @@ export default function HistoryScreen() {
   );
 }
 
-// Simple Horizontal Scroll emulation
-function ScrollViewHorizontalContent({ subjects, selected, onSelect }: { subjects: string[], selected: string | null, onSelect: (val: string | null) => void }) {
-  return (
-    <View style={styles.filtersList}>
-      <TouchableOpacity 
-        style={[styles.filterBadge, !selected && styles.activeFilterBadge]}
-        onPress={() => onSelect(null)}
-      >
-        <Text style={[styles.filterBadgeText, !selected && styles.activeFilterBadgeText]}>All</Text>
-      </TouchableOpacity>
-      {subjects.map((sub) => (
-        <TouchableOpacity 
-          key={sub} 
-          style={[styles.filterBadge, selected === sub && styles.activeFilterBadge]}
-          onPress={() => onSelect(sub)}
-        >
-          <Text style={[styles.filterBadgeText, selected === sub && styles.activeFilterBadgeText]}>{sub}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
-}
 
-function ScrollViewHorizontal() {
-  return null;
-}
 
 const styles = StyleSheet.create({
   container: {

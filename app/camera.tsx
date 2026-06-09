@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import { Camera as ExpoCamera } from 'expo-camera';
+import { CameraView, Camera } from 'expo-camera';
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
@@ -19,7 +19,7 @@ import Animated, {
   withTiming, 
   Easing 
 } from 'react-native-reanimated';
-import { ArrowLeft, Image as ImageIcon, Camera, RefreshCw } from 'lucide-react-native';
+import { ArrowLeft, Image as ImageIcon, RefreshCw } from 'lucide-react-native';
 import { GeminiService } from '../services/GeminiService';
 import { useAppStore } from '../services/store';
 
@@ -31,13 +31,14 @@ export default function CameraScreen() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const cameraRef = React.useRef<CameraView>(null);
 
   // Animation values
   const scanLineY = useSharedValue(0);
 
   useEffect(() => {
     (async () => {
-      const { status } = await ExpoCamera.requestCameraPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
 
@@ -93,6 +94,29 @@ export default function CameraScreen() {
         console.error(err);
       }
     }, 2000);
+  };
+
+  const captureImage = async () => {
+    if (cameraRef.current) {
+      setLoading(true);
+      try {
+        const photo = await cameraRef.current.takePictureAsync({
+          quality: 0.8,
+          base64: true
+        });
+        if (photo && photo.uri) {
+          setPreviewImage(photo.uri);
+          await processImage(photo.base64 || "", photo.uri);
+        } else {
+          await simulateCapture();
+        }
+      } catch (err) {
+        console.error("Camera capture failed, falling back to mock:", err);
+        await simulateCapture();
+      }
+    } else {
+      await simulateCapture();
+    }
   };
 
   const processImage = async (base64: string, uri: string) => {
@@ -156,6 +180,13 @@ export default function CameraScreen() {
         </View>
       ) : (
         <View style={styles.scannerBody}>
+          {hasPermission && (
+            <CameraView 
+              style={StyleSheet.absoluteFillObject} 
+              facing="back"
+              ref={cameraRef}
+            />
+          )}
           
           {/* Scanning Box Viewport */}
           <View style={styles.scanViewport}>
@@ -179,7 +210,7 @@ export default function CameraScreen() {
               <Text style={styles.actionText}>Gallery</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.captureButton} onPress={simulateCapture}>
+            <TouchableOpacity style={styles.captureButton} onPress={captureImage}>
               <View style={styles.captureInner} />
             </TouchableOpacity>
 
@@ -243,6 +274,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 40,
+    position: 'relative',
+    overflow: 'hidden',
   },
   scanViewport: {
     width: width * 0.8,
